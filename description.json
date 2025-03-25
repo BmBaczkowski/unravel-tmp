@@ -1,0 +1,33 @@
+{
+  "Name": "Title",
+  "DatasetType": "research-compendium",
+  "License": "CC-BY-4.0",
+  "Authors": ["Blazej M. Baczkowski"],
+  "Acknowledgements": "Special thanks to Dr. Felix Kalbe for sharing the original dataset.",
+  "ReferencesAndLinks": [
+    "Kalbe, F., & Schwabe, L. (2022). On the search for a selective and retroactive strengthening of memory: Is there evidence for category-specific behavioral tagging? In Journal of Experimental Psychology: General (Vol. 151, Issue 1, pp. 263-284). American Psychological Association (APA). https://doi.org/10.1037/xge0001075"
+  ],
+  "GeneratedBy": {
+    "Name": "Custom code",
+    "CodeURL": "bids::Makefile",
+    "Container": "bids::dockerfiles/r-stan"
+  },
+  "SourceDatasets": [
+    {
+      "URL": "https://osf.io/qpm3t/files/osfstorage/5e2f0b8e87a1d9023d1cf591",
+      "Version": "2021-01-27 11:33 AM"
+    },
+    {
+      "URL": "https://osf.io/qpm3t/files/osfstorage/5e2f0b8ec19c5d0252ee012d",
+      "Version": "2021-01-27 11:34 AM"
+    },
+    {
+      "URL": "https://osf.io/qpm3t/files/osfstorage/5e2f0b8d87a1d9024c1cebc2",
+      "Version": "2021-01-27 11:34 AM"
+    },
+    {
+      "URL": "https://osf.io/qpm3t/files/osfstorage/5fc50a1cc623190430d8021d",
+      "Version": "2021-01-27 11:34 AM"
+    }
+  ]
+}
