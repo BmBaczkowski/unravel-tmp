@@ -4,7 +4,7 @@ readme <- glue("
 
 # Dataset info
 
-This is a minimally pre-processed dataset sourced from OSF repository [Kalbe and Schwabe](https://osf.io/qpm3t/) and reported in the paper by [Kalbe and Schwabe (2022)](https://doi.org/10.1037/xge0001075). 
+This is a minimally pre-processed dataset sourced from [OSF repository](https://osf.io/qpm3t/) and reported in the paper by [Kalbe and Schwabe (2022)](https://doi.org/10.1037/xge0001075). 
 
 The original data were extracted, transformed, and saved in accordance with the [BIDS](https://bids-specification.readthedocs.io/en/v1.8.0/) standard. Pre-processing included renaming factor variables for better readability. For recognition task, reaction time (and confidence ratings in study 1) were filtered based on whether 'old' / 'new' response was provided. 
 

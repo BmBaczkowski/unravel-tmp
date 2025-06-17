@@ -15,6 +15,9 @@ require(osfr)
 urls_file <- args[1]
 path_to_download <- args[2]
 
+# Create target directory
+dir.create(path_to_download)
+
 # Read URLs from the specified file
 urls <- readLines(urls_file)
 

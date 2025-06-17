@@ -1,16 +1,11 @@
-\documentclass{article}
-% \usepackage[a4paper,landscape]{geometry}
-
-% packages
+\documentclass{standalone}
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{bm}
 \usepackage{tikz}
 \usepackage{mathtools}
 \usepackage{blkarray}
-\usepackage{graphicx} % For \scalebox
-
-
+\usepackage{graphicx}
 \usetikzlibrary{shadows,fit,positioning,arrows,intersections}
 
 
@@ -181,7 +176,7 @@
 %% Here starts the actual code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{tabular}{ m{8cm} m{10cm}}
+\begin{tabular}{ m{8cm} m{9cm}}
 
   % Graphical model
   \begin{tikzpicture}[node distance=2.5cm, auto, >=latex']
@@ -262,12 +257,9 @@
 \[
 \begin{array}{rcl}
     \ell& \sim & invGamma(5, 5) \\
-    \tau_j^{gp} & \sim & Gamma(5, 10) \\
-    k(x | 1.0, \ell) & = & \left( 1 + \frac{\sqrt{3} \|x - x'\|}{\ell} \right) \exp\left(-\frac{\sqrt{3} \|x - x'\|}{\ell}\right) \\
-    L_{\Omega} & \sim & LKJcorr(2)  \\
-    \Omega_{jj} & = & diag(\tau_j^{gp}) \cdot L_{\Omega} \cdot diag(\tau_j^{gp}),\ j \in \{1, \ldots, 6\}  \\  
-    f_{[i,]} & \sim & MvNormal(\mathbf{0}_{[i,]}, k(x | \tau_j^{gp}, \ell)_{[i,i]} \cdot \Omega) \\ 
-    f_{[,j]} & \sim & MvNormal(\mathbf{0}_{[,j]}, k(x | \tau_j^{gp}, \ell) \cdot \Omega_{[j,j]}) \\ 
+    \tau^{gp} & \sim & invGamma(5, 5) \\
+    k(x | \tau^{gp}, \ell) & = & \tau^{gp} \cdot \left( 1 + \frac{\sqrt{3} \|x - x'\|}{\ell} \right) \exp\left(-\frac{\sqrt{3} \|x - x'\|}{\ell}\right) \\ 
+    f & \sim & MvNormal(\mathbf{0}, k(x | \tau^{gp}, \ell)) \\ 
     \sigma_{gp} & \sim & Gamma(5, 10) \\
     \beta_{ij} & \sim & Normal(f_{ij}, \sigma_{gp}) \\
     \mu_{1}^{\alpha} & \sim & Normal(-0.8, 1.5) \\
@@ -286,8 +278,8 @@
       -1/2 & \text{if unit $j/k$} \in \{animals\} \\ 
       1/2 & \text{if unit $j/k$} \in \{tools\}
     \end{cases}\\ 
-    \mathrm{logit}(\rho_{ij}) & = & \mathit{inv}(X_j^{\beta}) \cdot (\beta_{ij} + u_{j[study]}^{\beta}) + w_{j} \cdot \eta^{\rho}\\ 
-    \mathrm{logit}(\gamma_{ik}) & = & \mathit{inv}(X_k^{\alpha}) \cdot (\alpha_{ik} + u_{k[study]}^{\alpha}) + w_{k} \cdot \eta^{\gamma}\\    
+    \mathrm{logit}(\rho_{ij}) & = & X_j^{\beta} \cdot (\beta_{ij} + u_{j[study]}^{\beta}) + w_{j} \cdot \eta^{\rho}\\ 
+    \mathrm{logit}(\gamma_{ik}) & = & X_k^{\alpha} \cdot (\alpha_{ik} + u_{k[study]}^{\alpha}) + w_{k} \cdot \eta^{\gamma}\\    
     \theta_{ik} & = & \gamma_{ik},\ \mathrm{for}\ k \in \{1, 2\} \\
     \theta_{ij} & = & \rho_{ij} + (1-\rho_{ij}) \cdot \gamma_{i1},\ \mathrm{for}\ j \in \{1, 2, 3\} \\
     \theta_{ij} & = & \rho_{ij} + (1-\rho_{ij}) \cdot \gamma_{i2},\ \mathrm{for}\ j \in \{4, 5, 6\} \\

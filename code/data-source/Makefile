@@ -25,12 +25,15 @@ test-docker-r:
 #------------------------------------------------------------------------------
 # TARGETS
 #------------------------------------------------------------------------------
-.PHONY: all directories
+.PHONY: all clean
 
-all: directories $(DATA_SOURCE_DIR)
+all: $(DATA_SOURCE_DIR)
+clean: 
+	@rm -fr $(DATA_SOURCE_DIR)
+	@echo ""
+	@echo "Source data removed"
+	@echo ""
 
-directories:
-	mkdir -p $(DATA_SOURCE_DIR)
 
 $(DATA_SOURCE_DIR): \
 	$(CODE_DIR_BASE)/src/download_data.r \

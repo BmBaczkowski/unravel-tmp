@@ -62,7 +62,6 @@ repro: derivatives
 	@echo ""
 	$(MAKE) -j $(CORES) -f code/results-reproducibility/Makefile all
 
-
 #------------------------------------------------------------------------------
 # FIT REINFORCEMENT LEARNING MODELS
 #------------------------------------------------------------------------------
@@ -84,78 +83,119 @@ mdls:
 
 
 #------------------------------------------------------------------------------
-# FIT 1HT MODEL
+# FIT MODELS
 #------------------------------------------------------------------------------
-.PHONY: 1HT
+.PHONY: fit-mdls
 
-1HT: derivatives mdls
+# to fit model with large number of MCMC samples, set LARGE=yes
+fit-mdls: derivatives
 	@echo ""
-	@echo "Fitting 1HT model..."
+	@echo "Fitting models..."
 	@echo ""
-	$(MAKE) -f code/results-1HT/Makefile all
-
-# to fit model with large number of MCMC samples, use
-# $(MAKE) -f code/results-1HT/Makefile large
+	$(MAKE) -j $(CORES) -f code/results-mdl/Makefile all LARGE=no
 
 #------------------------------------------------------------------------------
-# FIT 1HT MODEL EXTENDED WITH GP
+# RUN CROSS-VALIDATION
 #------------------------------------------------------------------------------
-.PHONY: GP
+.PHONY: kfold
 
-GP: derivatives mdls
+kfold: fit-mdls
 	@echo ""
-	@echo "Fitting 1HT model extended with GP..."
+	@echo "5-fold cross validation..."
 	@echo ""
-	$(MAKE) -f code/results-gp/Makefile all
-
-# to fit model with large number of MCMC samples, use
-# $(MAKE) -f code/results-gp/Makefile large
-# this takes about 3 hours on my machine
+	$(MAKE) -f code/results-mdl-kfold/Makefile all
 
 #------------------------------------------------------------------------------
 # RUN KOHONEN 
 #------------------------------------------------------------------------------
 .PHONY: kohonen
 
-kohonen: 1HT
+# to fit model with large number of MCMC samples, set LARGE=yes
+kohonen: fit-mdls
 	@echo ""
 	@echo "Kohonen..."
 	@echo ""
-	$(MAKE) -f code/results-kohonen/Makefile all
-
-# requires large MCMC samples from 1HT to reproduce the reported results
-# $(MAKE) -f code/results-kohonen/Makefile all LARGE=1
+	$(MAKE) -f code/results-kohonen/Makefile all LARGE=no
 
 #------------------------------------------------------------------------------
-# FIT MIXTURE 1HT
+# FIT MIXTURE MODELS
 #------------------------------------------------------------------------------
-.PHONY: mixture
+.PHONY: fit-mixture
 
-mixture: derivatives mdls
+# to fit model with large number of MCMC samples, set LARGE=yes
+fit-mixture: fit-mdls
 	@echo ""
-	@echo "Fitting mixture 1HT model..."
+	@echo "Fitting mixture models..."
 	@echo ""
-	$(MAKE) -f code/results-mixture/Makefile all
+	$(MAKE) -f code/results-mixture/Makefile all LARGE=no
 
-# to fit model with large number of MCMC samples, use
-# $(MAKE) -f code/results-mixture/Makefile large
-# this takes about 3 hours on my machine
+
+#------------------------------------------------------------------------------
+# EXTRACT COVARIATES
+#------------------------------------------------------------------------------
+.PHONY: mixture-covs
+
+# to fit model with large number of MCMC samples, set LARGE=yes
+mixture-covs: fit-mixture RL
+	@echo ""
+	@echo "Fitting mixture models..."
+	@echo ""
+	$(MAKE) -f code/results-mixture-covariates/Makefile all LARGE=no
+
+#------------------------------------------------------------------------------
+# FIT GP MODELS
+#------------------------------------------------------------------------------
+.PHONY: GP-rw GP-scr-avg GP-scr_delta
+
+# to fit model with large number of MCMC samples, set LARGE=yes
+# with alpha learning rate from Rescorla-Wagner model
+GP-rw: derivatives mixture-covs
+	@echo ""
+	@echo "Fitting GP models (RW)..."
+	@echo ""
+	$(MAKE) -f code/results-gp/Makefile all VAR=rw LARGE=no
+
+# with SCR (difference between CS+ vs CS-)
+GP-scr-delta: derivatives mixture-covs
+	@echo ""
+	@echo "Fitting GP models (SCR delta)..."
+	@echo ""
+	$(MAKE) -f code/results-gp/Makefile all VAR=scr_delta LARGE=no
+
+# with SCR (average across CS+ and CS-)
+GP-scr-avg: derivatives mixture-covs
+	@echo ""
+	@echo "Fitting GP models (SCR average)..."
+	@echo ""
+	$(MAKE) -f code/results-gp/Makefile all VAR=scr_avg LARGE=no
+
 
 #------------------------------------------------------------------------------
 # PLOTS
 #------------------------------------------------------------------------------
-.PHONY: plots plots_large
+.PHONY: plots
 
+# set to LARGE=yes if a model with large number of MCMC samples is preferred
 plots: 
-	$(MAKE) -f code/plots-reproducibility/Makefile all
-	$(MAKE) -f code/plots-1HT/Makefile all
+	$(MAKE) -f code/plots-reproducibility/Makefile all 
+	$(MAKE) -f code/plots-mdl/Makefile all LARGE=no
 	$(MAKE) -f code/plots-kohonen/Makefile all
-	$(MAKE) -f code/plots-mixture/Makefile all
-	$(MAKE) -f code/plots-gp/Makefile all
+	$(MAKE) -f code/plots-mixture/Makefile all LARGE=no
+	$(MAKE) -f code/plots-gp/Makefile all LARGE=no
 
-plots_large: 
-	$(MAKE) -f code/plots-reproducibility/Makefile all
-	$(MAKE) -f code/plots-1HT/Makefile all SLOW=1
-	$(MAKE) -f code/plots-kohonen/Makefile all LARGE=1
-	$(MAKE) -f code/plots-mixture/Makefile all SLOW=1
-	$(MAKE) -f code/plots-gp/Makefile all SLOW=1
+#------------------------------------------------------------------------------
+# RUN ALL ANALYSES (default LARGE=no)
+#------------------------------------------------------------------------------
+.PHONY: all
+
+all: \
+	repro \
+	RL \
+	fit-mdls \
+	kfold \
+	kohonen \
+	fit-mixture \
+	mixture-covs \
+	GP-rw \
+	GP-scr-delta
+

@@ -1,16 +1,11 @@
-\documentclass{article}
-\usepackage[a4paper,landscape]{geometry}
-
-% packages
+\documentclass{standalone}
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{bm}
 \usepackage{tikz}
 \usepackage{mathtools}
 \usepackage{blkarray}
-\usepackage{graphicx} % For \scalebox
-
-
+\usepackage{graphicx}
 \usetikzlibrary{shadows,fit,positioning,arrows,intersections}
 
 
@@ -181,7 +176,7 @@
 %% Here starts the actual code
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{tabular}{ m{8cm} m{10cm} m{1cm}}
+\begin{tabular}{ m{8cm} m{9cm}}
 
   % Graphical model
   \begin{tikzpicture}[node distance=2.5cm, auto, >=latex']
@@ -263,6 +258,7 @@
   &
 
 % Statistical definition
+{\small
 \renewcommand{\arraystretch}{1.2}
 \[
 \begin{array}{rcl}
@@ -287,78 +283,26 @@
       -1/2 & \text{if unit $j/k$} \in \{animals\} \\ 
       1/2 & \text{if unit $j/k$} \in \{tools\}
     \end{cases}\\ 
-    \mathrm{logit}(\rho_{ij}) & = & \mathit{inv}(X_j^{\beta}) \cdot (\beta_{ij} + u_{j[study]}^{\beta}) + w_{j} \cdot \eta^{\rho}\\ 
-    \mathrm{logit}(\gamma_{ik}) & = & \mathit{inv}(X_k^{\alpha}) \cdot (\alpha_{ik} + u_{k[study]}^{\alpha}) + w_{k} \cdot \eta^{\gamma}\\    
+    \mathrm{logit}(\rho_{ij}) & = & X_j^{\beta} \cdot (\beta_{ij} + u_{j[study]}^{\beta}) + w_{j} \cdot \eta^{\rho}\\ 
+    \mathrm{logit}(\gamma_{ik}) & = & X_k^{\alpha} \cdot (\alpha_{ik} + u_{k[study]}^{\alpha}) + w_{k} \cdot \eta^{\gamma}\\    
     \theta_{ik} & = & \gamma_{ik},\ \mathrm{for}\ k \in \{1, 2\} \\
     \theta_{ij} & = & \rho_{ij} + (1-\rho_{ij}) \cdot \gamma_{i1},\ \mathrm{for}\ j \in \{1, 2, 3\} \\
     \theta_{ij} & = & \rho_{ij} + (1-\rho_{ij}) \cdot \gamma_{i2},\ \mathrm{for}\ j \in \{4, 5, 6\} \\
     y_{ij} & \sim & Binomial(\theta_{ij}, n_{ij}^{old}),\ \mathrm{for}\ j \in \{1, \ldots, 6\} \\
     y_{ik} & \sim & Binomial(\theta_{ik}, n_{ik}^{new}),\ \mathrm{for}\ k \in \{1, 2\} \\
+    j & = & 
+    \begin{cases}
+    1, 2, 3 & \text{for unit in } \mathit{phase}_{[1,2,3]}^{CS-} \\
+    4, 5, 6 & \text{for unit in } \mathit{phase}_{[1,2,3]}^{CS+}
+    \end{cases} \\
+    k & = & 
+    \begin{cases} 
+    1 & \text{if unit is } \mathit{CS-} \\ 
+    2 & \text{if unit is } \mathit{CS+}
+    \end{cases}
   \end{array}
 \]
-
-&
-\renewcommand{\arraystretch}{1.2}
-\[
-\begin{array}{rcl}
-  j & = & \begin{cases} 
-    1 & \text{if unit is } \mathit{phase_1^{CS-}} \\ 
-    2 & \text{if unit is } \mathit{phase_2^{CS-}} \\ 
-    3 & \text{if unit is } \mathit{phase_3^{CS-}} \\ 
-    4 & \text{if unit is } \mathit{phase_1^{CS+}} \\ 
-    5 & \text{if unit is } \mathit{phase_2^{CS+}} \\ 
-    6 & \text{if unit is } \mathit{phase_3^{CS+}} 
-  \end{cases} \\
-  k & = & \begin{cases} 
-    1 & \text{if unit is } \mathit{{CS-}} \\ 
-    2 & \text{if unit is } \mathit{{CS+}}
-  \end{cases} \\
-  X_j^{\beta} & = & 
-    \scalebox{0.8}{$
-    \begin{blockarray}{ccccccc}
-      & \beta_{1} & \beta_{2} & \beta_{3} & \beta_{4} & \beta_{5} & \beta_{6} \\
-      \begin{block}{l[cccccc]}
-        \mathit{phase_1^{CS-}} & 1/6 & -1 & 0 & -1 & 0 & 0 \\
-        \mathit{phase_2^{CS-}} & 1/6 & 1 & -1 & 0 & -1 & 0 \\
-        \mathit{phase_3^{CS-}} & 1/6 & 0 & 1 & 0 & 0 & -1 \\
-        \mathit{phase_1^{CS+}} & 1/6 & -1 & 0 & 1 & 0 & 0 \\
-        \mathit{phase_2^{CS+}} & 1/6 & 1 & -1 & 0 & 1 & 0 \\
-        \mathit{phase_3^{CS+}} & 1/6 & 0 & 1 & 0 & 0 & 1 \\
-      \end{block}
-    \end{blockarray}$} \\ 
-    inv(X_j^{\beta}) & = & 
-    \scalebox{0.8}{$
-    \begin{blockarray}{ccccccc}
-      & \beta_{1} & \beta_{2} & \beta_{3} & \beta_{4} & \beta_{5} & \beta_{6} \\
-      \begin{block}{l[cccccc]}
-        \mathit{phase_1^{CS-}} & 1 & -1/3 & -1/6 & -1/2 & 0 & 0 \\
-        \mathit{phase_2^{CS-}} & 1 & 1/6 & -1/6 & 0 & -1/2 & 0 \\
-        \mathit{phase_3^{CS-}} & 1 & 1/6 & 1/3 & 0 & 0 & -1/2 \\
-        \mathit{phase_1^{CS+}} & 1 & -1/3 & -1/6 & 1/2 & 0 & 0 \\
-        \mathit{phase_2^{CS+}} & 1 & 1/6 & -1/6 & 0 & 1/2 & 0 \\
-        \mathit{phase_3^{CS+}} & 1 & 1/6 & 1/3 & 0 & 0 & 1/2 \\
-      \end{block}
-    \end{blockarray}$} \\ 
-    X_k^{\alpha} & = & 
-    \scalebox{0.8}{$
-    \begin{blockarray}{ccc}
-      & \alpha_{1} & \alpha_{2} \\
-      \begin{block}{l[cc]}
-        \mathit{CS-} & 1/2 & -1\\
-        \mathit{CS+} & 1/2 & 1 \\
-      \end{block}
-    \end{blockarray}$} \\
-    inv(X_k^{\alpha}) & = & 
-    \scalebox{0.8}{$
-    \begin{blockarray}{ccc}
-      & \alpha_{1} & \alpha_{2} \\
-      \begin{block}{l[cc]}
-        \mathit{CS-} & 1 & -1/2\\
-        \mathit{CS+} & 1 & 1/2 \\
-      \end{block}
-    \end{blockarray}$} \\
-\end{array}
-\]
+}
 
 \end{tabular}
 
